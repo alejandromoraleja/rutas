@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ruta por la ribera del Ebro (Zaragoza)</title>
+    <script src="js/leaflet.js"></script>
+    <link rel="stylesheet" href="css/leaflet.css">
+</head>
+<style>
+body {
+    padding: 0;
+    margin: 0;
+    }
+    html, body, #map {
+    height: 100%;
+    width: 100%;
+    }
+    #title {
+                position: fixed;
+                margin-top: 0;
+                top: 10px;
+                left: 55px;
+                font-size: 2em;
+                font-family: "Lora", serif;
+                letter-spacing: .04em;
+                padding: 10px 15px;
+                background-color: rgba(255, 255, 255, 0.5);
+                border: 1px solid grey;
+                border-radius: 3px;
+                z-index: 800;
+            }
+            #description {
+                position: fixed;
+                bottom: 20px;
+                left: 10px;
+                width: 150px;
+                padding: 0px 15px;
+                background-color: rgba(255, 255, 255, 0.7);
+                border: 1px solid grey;
+                border-radius: 3px;
+                z-index: 800;
+            }
+</style>
+<body>
+    <h1 id="title">Ruta por la ribera del Ebro (Zaragoza)</h1>
+    <div id="map"></div>
+    <div id="description">
+        <h2>Acerca del mapa</h2>
+        <p>Mapa acerca de 2 rutas diferentes a realizar por la ribera del Río Ebro en Zaragoza. Un de ellas andando y otra en bicicelta.</p>
+        <p id="bici">- Ruta en bici</p>
+        <p id="andando">- Ruta a pie</p>
+        <p>Mapa realizado por Alejandro Moraleja</p>
+    </div>
+
+    <script>
+//Añadir distintos mapas base 
+        var mapa1 = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+	maxZoom: 17,
+	attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+});
+        var mapa2 = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+	maxZoom: 19,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
+});
+var baseMaps = {
+    "Mapa topográfico": mapa1,
+    "Mapa humanitario": mapa2
+};
+let map = L.map("map", {center: [41.667303984775224, -0.8966402247551393
+        ], zoom: 12, });
+        
+//Creación de las variables de los puntos de interés
+        var Tercer_Milenio = L.marker( [41.665619271625076, -0.9085357543099958]).bindPopup( "<h2>Puente del Tercer Milenio</h2><p>El puente del Tercer Milenio es un puente de la ciudad de Zaragoza, situado sobre el río Ebro y que conecta los barrio de Las Delicias y La Almozara con el barrio del ACTUR-Rey Fernando. Es el mayor puente de arco en hormigón suspendido del mundo</p><img src='images/Ter_Mil.jpg'</p> <p> <a href='https://es.wikipedia.org/wiki/Puente_del_Tercer_Milenio'> Web</a></p>"),
+ Expo = L.marker( [41.668836610020215, -0.9025409418811952]).bindPopup( "<h2>Expo Zaragoza 2008</h2><p>La Exposición Internacional de Zaragoza fue una exposición internacional reconocida que se celebró en Zaragoza desde el 14 de junio al 14 de septiembre de 2008 y cuyo eje temático fue «Agua y desarrollo sostenible»</p><img src='images/Expo.jpg'</p> <p> <a href='http://www.expozaragoza2008.es/'> Web</a></p>"),    
+ Macanaz = L.marker( [41.6594108414401, -0.880141714669503]).bindPopup( "<h2>Parque Macanaz</h2><p>Gran espacio verde paralelo a la ribera del Ebro</p><img src='images/Macanaz.jpg'</p> <p> <a href='https://zaragozaguia.com/parque-de-macanaz/'> Web</a></p>"),
+ Pilar = L.marker( [41.65678166681458, -0.8786182199274375]).bindPopup( "<h2>Basílica de Nuestra Señora del Pilar</h2><p>Es un importante templo barroco dedicado a Nuestra Señora del Pilar en la ciudad de Zaragoza (Aragón, España).</p><img src='images/Pilar.jpg'</p> <p> <a href='https://es.wikipedia.org/wiki/Catedral-bas%C3%ADlica_de_Nuestra_Se%C3%B1ora_del_Pilar_de_Zaragoza'> Web</a></p>"),
+ Puente_Piedra = L.marker( [41.657390875265705, -0.8753351961232179]).bindPopup( "<h2>Puente de Piedra</h2><p>Majestuoso puente de piedra del siglo XV que cruza el río Ebro, con imponentes estatuas de leones.</p><img src='images/Puente_Piedra.jpg'</p> <p> <a href='https://es.wikipedia.org/wiki/Puente_de_Piedra_(Zaragoza)'> Web</a></p>"),
+ Galachos = L.marker( [41.70301286256086, -0.9304678728745646]).bindPopup( "<h2>Galacho de Juslibol</h2><p>El Galacho de Juslibol es un espacio natural situado sobre un acuífero del río Ebro a dos kilómetros del barrio rural de Juslibol, en el término municipal de Zaragoza (España), en la margen izquierda del Ebro, a cuatro kilómetros aguas arriba de la ciudad de Zaragoza.</p><img src='images/Galacho.jpg'</p> <p> <a href='https://www.turismodearagon.com/ficha/c-i-y-centro-de-visitantes-del-galacho-de-juslibol/'> Web</a></p>"),
+ Monzalbarba = L.marker( [41.70421645973603, -0.9645510255791615]).bindPopup( "<h2>Monzalbarba</h2><p>Monzalbarba es un barrio rural de Zaragoza​ que se encuentra 11 km al noroeste del centro de la capital</p><img src='images/Monzalbarba.jpg'</p>"),   
+ Mirador_Alfocea = L.marker( [41.725193050140454, -0.9557691892056969]).bindPopup( "<h2>Mirador de Alfocea</h2><p>Mirador desde Alfocea (Zaragoza) desde el que se puede ver todo el entorno de los alrededores de Zaragoza</p><img src='images/Mirador_Alfocea.jpg'</p>");  
+
+var puntos_interes = L.layerGroup([Tercer_Milenio, Expo, Macanaz, Pilar, Puente_Piedra, Galachos, Monzalbarba, Mirador_Alfocea]);
+
+
+
+var Ruta_andando = L.polyline(
+[[41.665619271625076, -0.9085357543099958], [41.668836610020215, -0.9025409418811952],[41.6594108414401, -0.880141714669503],[41.657390875265705, -0.8753351961232179],[41.65678166681458, -0.8786182199274375],[41.665619271625076, -0.9085357543099958]],
+{color: "red", weight: 10});
+
+var Ruta_bici = L.polyline(
+[[41.70421645973603, -0.9645510255791615],[41.725193050140454, -0.9557691892056969],[41.70301286256086, -0.9304678728745646],[41.69451329298584, -0.8929404730573286],[41.668836610020215, -0.9025409418811952],[41.6594108414401, -0.880141714669503],[41.657390875265705, -0.8753351961232179],[41.65678166681458, -0.8786182199274375],[41.665619271625076, -0.9085357543099958],[41.6634303493815, -0.9224609554305019],[41.70421645973603, -0.9645510255791615]],
+{color: "green", weight: 5});
+
+var overlayMaps = {
+    "Puntos de interés": puntos_interes,
+    "Ruta a pie": Ruta_andando,
+    "Ruta en bicicleta": Ruta_bici
+};
+
+
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+
+//popup para coordenadas
+let popup = L.popup();
+function onMapClick(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent(
+            "You clicked the map at -<br>" + 
+            "<b>lon:</b> " + e.latlng.lng + "<br>" + 
+            "<b>lat:</b> " + e.latlng.lat
+        )
+        .openOn(map);
+}
+map.addEventListener("click", onMapClick);
+
+
+</script>
+</body>
+</html>
